@@ -20,6 +20,8 @@ javac Main.java
 
 ![alt text](/backendApi/screenshots/screenshot-1.png)
 
+![alt text](/backendApi/screenshots/screenshot-2.png)
+
 ### 2- Write dockerfile.
 
 ```dockerfile
@@ -40,8 +42,8 @@ docker build -t backend-api .
 docker run --rm --name backend-api backend-api
 ```
 
-![alt text](/backendApi/screenshots/screenshot-2.png)
+![alt text](/backendApi/screenshots/screenshot-3.png)
 
 ### If it’s a success you must see “Hello Word” in your console.
 
-![alt text](/backendApi/screenshots/screenshot-3.png)
+![alt text](/backendApi/screenshots/screenshot-4.png)
