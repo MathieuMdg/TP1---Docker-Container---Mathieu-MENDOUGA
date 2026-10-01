@@ -14,7 +14,7 @@
 ```
 .
 ├── docker-compose.yml
-├── .env / .env.example
+├── .env
 ├── database/      (Dockerfile + SQL init scripts)
 ├── backendApi/    (Hello World, simple and multistage)
 ├── simpleapi/simpleapi/   (Spring Boot API + Dockerfile)
