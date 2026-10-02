@@ -8,12 +8,8 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
     networks:
-      - app-network
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
+      - database-backend-network
+    
 
   backend:
     build: ./simpleapi
@@ -21,10 +17,10 @@ services:
     container_name: backend
     restart: unless-stopped
     networks:
-      - app-network
+      - backend-httpd-network
+      - database-backend-network
     depends_on:
-      database:
-        condition: service_healthy
+      - database
 
   httpd:
     build: ./httpd
@@ -34,12 +30,13 @@ services:
     ports:
       - "80:80"
     networks:
-      - app-network
+      - backend-httpd-network
     depends_on:
       - backend
 
 networks:
-  app-network:
+  database-backend-network:
+  backend-httpd-network:
 
 volumes:
   db-data:
