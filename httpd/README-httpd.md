@@ -6,6 +6,30 @@ Image used: `httpd:2.4` (Apache).
 
 `index.html`: simple landing page.
 
+`Dockerfile.landing`:
+
+```dockerfile
+FROM httpd:2.4
+COPY index.html /usr/local/apache2/htdocs/
+```
+
+```bash
+docker build -f Dockerfile.landing -t httpd-landing .
+ docker run -d --name httpd-landing -p 8081:80 httpd-landing
+```
+
+![Landing terminal](./screenshots/httpd-landing-terminal.png)
+
+![Commands](./screenshots/httpd-landing-terminal-logs.png)
+
+![Commands](./screenshots/httpd-landing-terminal-stats.png)
+
+![Commands](./screenshots/httpd-landing-terminal-inspect.png)
+
+```bash
+docker rm -f httpd-landing
+```
+
 `Dockerfile`:
 
 ```dockerfile
@@ -20,14 +44,17 @@ Landing page test, before the proxy was configured:
 
 Useful commands: `docker logs`, `docker stats`, `docker inspect`.
 
+![Terminal](./screenshots/httpd-stats.png)
+
 ## Configuration
 
 The default configuration was retrieved from a container:
 
 ```bash
-docker create --name tmp-httpd httpd:2.4
+docker run -d --name tmp-httpd httpd:2.4
+docker exec tmp-httpd cat /usr/local/apache2/conf/httpd.conf | Select-Object -First 5
 docker cp tmp-httpd:/usr/local/apache2/conf/httpd.conf ./httpd.conf
-docker rm tmp-httpd
+docker rm -f tmp-httpd
 ```
 
 ![Terminal](./screenshots/httpd-terminal.png)

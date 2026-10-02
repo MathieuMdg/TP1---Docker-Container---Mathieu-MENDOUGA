@@ -16,7 +16,7 @@ services:
       retries: 10
 
   backend:
-    build: ./simpleapi/simpleapi
+    build: ./simpleapi
     image: mathieumdg/my-backend:1.0
     container_name: backend
     restart: unless-stopped

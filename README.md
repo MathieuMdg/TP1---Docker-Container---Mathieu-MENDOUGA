@@ -97,15 +97,27 @@ POSTGRES_PASSWORD=pwd
 ```bash
 docker compose up -d --build
 docker compose ps
+docker compose logs -f backend
 ```
 
 ![docker compose ps](./screenshots/compose-ps.png)
+
+![docker compose ps](./screenshots/compose-terminal.png)
 
 ```bash
 curl http://localhost/departments/IRC/students
 ```
 
 ![API through the reverse proxy](./screenshots/compose-api.png)
+
+![API through the reverse proxy](./screenshots/compose-api-terminal.png)
+
+```bash
+curl http://localhost/
+```
+
+![API through the reverse proxy](./screenshots/compose-api-terminal-localhost.png)
+
 
 ### 1-6 Why is docker-compose so important?
 
