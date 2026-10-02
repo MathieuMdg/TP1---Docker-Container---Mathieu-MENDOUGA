@@ -4,9 +4,9 @@
 
 | Part | Folder |
 |---|---|
-| Database | [database/](./database/README.md) |
-| Backend (Hello World + Spring Boot API) | [backendApi/](./backendApi/README.md) and [simpleapi/](./simpleapi/README.md) |
-| HTTP server + reverse proxy | [httpd/](./httpd/README.md) |
+| Database | [database/](./database/README-database.md) |
+| Backend (Hello World + Spring Boot API) | [backendApi/](./backendApi/README-backendApi.md) and [simpleapi/](./simpleapi/README-simpleApi.md) |
+| HTTP server + reverse proxy | [httpd/](./httpd/README-httpd.md) |
 | docker-compose and publication | this file |
 
 ## Project structure
