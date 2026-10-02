@@ -1,4 +1,6 @@
-# Backend API
+# Backend API - Hello World
+
+## Basics
 
 ### Main.java
 
@@ -8,42 +10,58 @@ public class Main {
    public static void main(String[] args) {
        System.out.println("Hello World!");
    }
-
 }
 ```
 
-### 1- Compile with your target Java: `javac Main.java`.
+### 1- Compile
 
 ```bash
 javac Main.java
 ```
 
-![alt text](/backendApi/screenshots/screenshot-1.png)
-
-![alt text](/backendApi/screenshots/screenshot-2.png)
-
-### 2- Write dockerfile.
+### 2- Dockerfile (only a JRE is needed at runtime)
 
 ```dockerfile
-FROM eclipse-temurin:25-jdk-alpine
+FROM eclipse-temurin:21-jre-alpine
 
 COPY Main.class .
 
 CMD ["java", "Main"]
 ```
 
-### 3- Now, to launch app you have to do the same thing that Basic step 1.
+### 3- Build and run
 
 ```bash
 docker build -t backend-api .
+docker run --rm backend-api
+```
+
+![Hello World](./screenshots/hello-run.png)
+
+## Multistage build
+
+The compilation is done by Docker in a JDK stage, and only the `.class` is copied into a JRE image.
+
+`Dockerfile.multistage`:
+
+```dockerfile
+FROM eclipse-temurin:21-jdk-alpine AS build
+WORKDIR /usr/src
+COPY Main.java .
+RUN javac Main.java
+
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /app
+COPY --from=build /usr/src/Main.class .
+CMD ["java", "Main"]
 ```
 
 ```bash
-docker run --rm --name backend-api backend-api
+docker build -f Dockerfile.multistage -t hello-multistage .
+docker run --rm hello-multistage
 ```
 
-![alt text](/backendApi/screenshots/screenshot-3.png)
+![Multistage](./screenshots/hello-multistage.png)
 
-### If it’s a success you must see “Hello Word” in your console.
+![Multistage](./screenshots/hello-multistage-terminal.png)
 
-![alt text](/backendApi/screenshots/screenshot-4.png)

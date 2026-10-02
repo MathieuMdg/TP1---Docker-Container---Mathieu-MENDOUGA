@@ -7,3 +7,5 @@ ENV POSTGRES_DB=db \
 COPY CreateScheme.sql /docker-entrypoint-initdb.d/01-create-scheme.sql
 COPY InsertData.sql /docker-entrypoint-initdb.d/02-insert-data.sql
 
+VOLUME db-data:/var/lib/postgresql/data
+

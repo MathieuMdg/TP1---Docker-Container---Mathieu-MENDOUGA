@@ -1,8 +1,8 @@
 # Database
 
-## Basics
+Image used: `postgres:17.2-alpine`.
 
-We use the image: postgres:17.2-alpine.
+## Basics
 
 ### Dockerfile
 
@@ -13,101 +13,62 @@ COPY CreateScheme.sql /docker-entrypoint-initdb.d/01-create-scheme.sql
 COPY InsertData.sql /docker-entrypoint-initdb.d/02-insert-data.sql
 ```
 
-![alt text](/database/screenshots/screenshot-1.png)
-
-### Build this image and start a container properly.
+### Network, build and run
 
 ```bash
-docker build -t postgres-server .
+docker network create app-network
+docker build -t my-database .
+docker run -d --name database --network app-network my-database
 ```
 
-```bash
-docker run -d --name server --network app-network postgres-server
-```
+![Build](./screenshots/db-build.png)
 
-![alt text](/database/screenshots/screenshot-2.png)
+![Run and logs](./screenshots/db-run.png)
 
 ## Adminer
 
-### Re-run your database with adminer.
-
 ```bash
-docker network create app-network
+docker run -d --name adminer --network app-network -p 8090:8080 adminer
 ```
 
-```bash
-docker run -d --name adminerapp --network app-network -p 8090:8080 adminer
-```
-![alt text](/database/screenshots/screenshot-3.png)
-
----
+![Adminer](./screenshots/db-adminer.png)
 
 ## Init database
 
-### 01-CreateScheme.sql
+Scripts: `CreateScheme.sql` (tables `departments` and `students`) and `InsertData.sql` (initial data).
 
-![alt text](/database/screenshots/screenshot-4.png)
-
-### 02-InsertData.sql
-
-![alt text](/database/screenshots/screenshot-5.png)
-
-### Rebuild your image and check that your scripts have been executed at startup and that the data is present in your container.
-
-```bash
-docker build -t postgres-db-container .
-```
-
-![alt text](/database/screenshots/screenshot-6.png)
-
-![alt text](/database/screenshots/screenshot-7.png)
-
----
+![Tables and data in Adminer](./screenshots/db-init.png)
 
 ## Persist data
 
-### Use volumes to persist data on the host disk.
+The volume `db-data` is mounted on `/var/lib/postgresql/data`. 
 
-![alt text](/database/screenshots/screenshot-8.png)
+```bash
+docker rm -f database
+docker run -d --name database --network app-network my-database
+```
 
-![alt text](/database/screenshots/screenshot-9.png)
-
----
+![Persistence](./screenshots/db-persist.png)
 
 ## Questions
 
-### 1-1 For which reason is it better to run the container with a flag `-e` to give the environment variables rather than put them directly in the Dockerfile?
+### 1-1 Why is it better to use `-e` rather than putting the variables in the Dockerfile?
 
-Because sensitive information such as database passwords should not be stored directly in the Dockerfile.
+Everything written in a Dockerfile ends up in the image and in the Git repository, so anyone with the image or the code can read the password. With `-e` (or an `.env` file in compose) the secrets are given at runtime, can differ per environment, and can be changed without rebuilding the image.
 
-### 1-2 Why do we need a volume to be attached to our postgres container?
+### 1-2 Why do we need a volume attached to our postgres container?
 
-If the PostgreSQL container is removed, the data stored inside the container is lost. A volume provides persistent storage outside the container.
+The container filesystem is temporary: when the container is removed, its data is lost. A volume stores the data outside the container, on the host, so the database survives removal, recreation or upgrade of the container.
 
-### 1-3 Document your database container essentials: commands and Dockerfile.
+### 1-3 Document your database container essentials
 
-Dockerfile : 
-    FROM postgres:17.2-alpine
+Dockerfile: see above. Commands:
 
-    COPY init/ /docker-entrypoint-initdb.d/
-
-
-Build :
-```bash
-docker build -t postgres-server .
-```
-
-```bash
-docker run -d --name server --network app-network postgres-server
-```
-
-Network :
 ```bash
 docker network create app-network
+docker build -t my-database .
+docker run -d --name database --network app-network \
+  -e POSTGRES_DB=db -e POSTGRES_USER=usr -e POSTGRES_PASSWORD=pwd \
+  -v db-data:/var/lib/postgresql/data my-database
+docker run -d --name adminer --network app-network -p 8090:8080 adminer
 ```
-
-Adminer :
-```bash
-docker run -d --name adminerapp --network app-network -p 8090:8080 adminer
-```
-
